@@ -64,6 +64,7 @@ class NeuralNetwork:
                 dldy = (y_pred - y)/y_pred(1 - y_pred)
                 dyda = self.derv_sigmoid(affine[j+1][j])
                 dadw = self.derv_ReLu(affine[i])
+                print('works')
 
 
 
