@@ -44,6 +44,23 @@ class NeuralNetwork:
     def derv_sigmoid(self, x):
         return self.sigmoid(x) * (1 - self.sigmoid(x))
 
+    def dldy(self, y_pred, y):
+        return (y_pred - y)/y_pred(1 - y_pred)
+
+    def dada(self, x, activation, w=1):
+        if activation == 'ReLu':
+            return w * self.derv_ReLu(x)
+        else:
+            return w * self.derv_sigmoid(x)
+
+    def dadw(self, x, activation, firstweight=0):
+        if firstweight == 1:
+            if activation == 'ReLu':
+                return self.ReLu(x)
+            else:
+                return self.sigmoid(x)
+        return x
+
     def feedforward(self, inputs, batch_size, layers):
         y_pred = []
         affines = []
@@ -64,7 +81,7 @@ class NeuralNetwork:
                 dldy = (y_pred - y)/y_pred(1 - y_pred)
                 dyda = self.derv_sigmoid(affine[j+1][j])
                 dadw = self.derv_ReLu(affine[i])
-                print('works')
+
 
 
 
