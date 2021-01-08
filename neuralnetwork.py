@@ -61,26 +61,37 @@ class NeuralNetwork:
                 return self.sigmoid(x)
         return x
 
-    def feedforward(self, inputs, batch_size, layers):
+    def feedforward(self, inputs, activations, layers):
         y_pred = []
         affines = []
-        val = np.array(inputs[0])
+        val = np.array(inputs)
         for j in range(layers):
-            n_output = val.dot(self.weights[j].T) + self.bias[j]
-            activated_op = self.sigmoid(n_output)
-            affines.append(n_output)
+            activated_op = []
+            n_output = np.dot(val, self.weights[j].T) + self.bias[j]
+            if activations[j] == "ReLu":
+              for i in n_output:
+                affines.append(i)
+                activated_op.append(self.ReLu(i))
+            else:
+              for i in n_output:
+                affines.append(i)
+                activated_op.append(self.sigmoid(i))
             val = activated_op
         y_pred.append(val)
-        return affines, y_pred
+        return y_pred, affines
 
-    def backpropagation(self, affines, y_pred, y, neurons):
-        affine = affines[::-1]
+    def backpropagation(self, y_pred, y, neurons, affines, layers):
         backprop_layers = neurons[::-1]
-        for i in range(len(backprop_layers) - 1):
-            for j in range(backprop_layers[i] * backprop_layers[i + 1]):
-                dldy = (y_pred - y)/y_pred(1 - y_pred)
-                dyda = self.derv_sigmoid(affine[j+1][j])
-                dadw = self.derv_ReLu(affine[i])
+        i = 0
+        for j in range(backprop_layers[i] * backprop_layers[i + 1]):
+            dldy = (y_pred - y)/y_pred(1 - y_pred)
+            dyda = self.derv_sigmoid(affines[j+1][j])
+            for j in range(i):
+
+            dadw = self.derv_ReLu(affines[i])
+            i += 1
+            if i > len(backprop_layers) - 1:
+                break;
 
 
 
