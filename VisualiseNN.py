@@ -7,9 +7,11 @@ import networkx as nx
 
 #Graphic imports
 import matplotlib
-matplotlib.use('TKAgg')
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
+from matplotlib import rcParams
+
 #Store weights of each layer after every fifth epoch]
 
 weights = [[0.85808367, 0.45937046,0.08260015, 0.9040238, -0.95295024, 0.35621813, -0.042709228, -0.02734862,0.04334547,
@@ -64,7 +66,7 @@ layers = [2, 3, 3, 1] #Layers in our neural network
 
 
 nodes = {'ip1': (10, 40), 'ip2':(10, 60), 'b1': (10, 5), 'a1': (20, 32), 'a2': (20, 52), 'a3': (20, 72),
-         'b2':(20, 5), 'a4': (30, 32), 'a5': (30, 52), 'a6': (30, 72), 'b3': (30, 5), 'a7': (35, 52)}
+         'b2':(20, 5), 'a4': (30, 32), 'a5': (30, 52), 'a6': (30, 72), 'b3': (30, 5), 'op': (35, 52)}
 
 G = nx.MultiGraph() #MUltigraph object
 
@@ -96,10 +98,10 @@ G.add_edge('a3', 'a6', color='r',  weight = 6)
 G.add_edge('b2', 'a4', color='r', weight = 2)
 G.add_edge('b2', 'a5', color='r',  weight = 2)
 G.add_edge('b2', 'a6', color='r',  weight = 4)
-G.add_edge('a4', 'a7', color='r',  weight = 4)
-G.add_edge('a5', 'a7', color='r',  weight = 6)
-G.add_edge('a6', 'a7', color='r',  weight = 6)
-G.add_edge('b3', 'a7', color='r',  weight = 6)
+G.add_edge('a4', 'op', color='r',  weight = 4)
+G.add_edge('a5', 'op', color='r',  weight = 6)
+G.add_edge('a6', 'op', color='r',  weight = 6)
+G.add_edge('b3', 'op', color='r',  weight = 6)
 
 
 def color_mapper_node(x):
@@ -107,6 +109,10 @@ def color_mapper_node(x):
  for i in x:
   if i == 'b1' or  i == 'b2' or i == 'b3':
    c_map.append('red')
+  elif i == 'ip1' or  i == 'ip2':
+   c_map.append('pink')
+  elif i == 'op':
+   c_map.append('yellow')
   else:
    c_map.append('blue')
  return c_map
@@ -132,23 +138,24 @@ def status_edge():
   yield color_mapper_edge(w)
 
 edge_map = status_edge()
-plt.rcParams['figure.facecolor'] = 'black'
 
 
 def draw_next_status(n):
  plt.cla()
  e_map = next(edge_map)
  nx.draw(G, nodes, node_color=color_mapper_node(nodes.keys()), edge_color=e_map, width=4, with_labels=True)
-plt.rcParams['animation.ffmpeg_path'] = "C:\FFmpeg\bin\ffmpeg.exe"
+
+
 # Set up formatting for the movie files
-Writer = animation.writers['ffmpeg']
-writer = Writer(fps=15, metadata=dict(artist='Me'), bitrate=1800)
 
 
 ani = animation.FuncAnimation(plt.gcf(), draw_next_status, interval=1000, frames=20, repeat= False)
-ani.save('C:/Users/Anah Veronica/OneDrive/Documents/neuralnetwork.gif', writer=writer, fps=30)
-plt.title('Training of a neural network')
+plt.title = "Neural Network Training"
 plt.show()
+
+writer = animation.PillowWriter(fps = 2)
+ani.save('C:/Users/Anah Veronica/OneDrive/Documents/neuralnetwork_animate.gif', writer=writer)
+
 
 
 
